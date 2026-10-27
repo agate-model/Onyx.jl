@@ -1,0 +1,21 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        julia-version: ['1.10', '1.13']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ matrix.julia-version }}
+      - uses: julia-actions/cache@v2
+      - name: Test against Agate main
+        run: julia --project=. -e 'using Pkg; Pkg.add(url="https://github.com/agate-model/Agate.jl", rev="main"); Pkg.test()'
